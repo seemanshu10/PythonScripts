@@ -16,3 +16,5 @@ def AutoLimbToolUI():
     
     # Show the Window
     cmds.showWindow (windows)
+
+    # Choice to commit
