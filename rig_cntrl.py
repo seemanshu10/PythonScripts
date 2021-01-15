@@ -144,60 +144,45 @@ def armIconScale():
     pvType = (cmds.radioButtonGrp('addPVElbow_Btn', q= True, sl= True)) - 1
 
     selected = cmds.ls (sl =True , dag =True,type ='joint')
+    # check the selection is valid
+    selectionCheck = cmds.ls(sl=1, type="joint")
 
+    # check if something is selected
+    if not selectionCheck:
+        cmds.error("Please select any joint")
     # creating a temporary list
     transform_list = []
     icon_test_list = []
 
     # creating the ik icon
     # cube
-    ik_box = cmds.curve(n='ik_arm_box_curve',d=1,p=[(1,1,-1),(1,1,1),
-                                                    (1,-1,1),(1,-1,-1),
-                                                    (1,1,-1),(-1,1,-1),
-                                                    (-1,-1,-1),(-1,-1,1),
-                                                    (-1,1,1),(-1,1,-1),
-                                                    (-1,-1,-1),(1,-1,-1),
-                                                    (1,-1,1),(-1,-1,1),
-                                                    (-1,1,1),(1,1,1)])
+    ik_box = cmds.curve(n='ik_arm_box_curve',d=1,p=[(1,1,-1),(1,1,1),(1,-1,1),(1,-1,-1),(1,1,-1),(-1,1,-1),(-1,-1,-1),(-1,-1,1),(-1,1,1),(-1,1,-1),(-1,-1,-1),(1,-1,-1),(1,-1,1),
+                                                    (-1,-1,1),(-1,1,1),(1,1,1)])
+
+    #cmds.rename (ik_box, 'ik_arm_box_curve')
     ik_box_List = cmds.ls(ik_box, dag =True)
-    
+
     # 4 Arrows
-    ik_arrows = cmds.curve(n='ik_arm_4arrows_curve',d=1, p=[(-1,0,-3),(-2, 0,-3),(0,0,-5),
-                                                       (2,0,-3),(1,0,-3),(1,0,-1),
-                                                       (3,0,-1),(3,0,-2),(5,0,0),
-                                                       (3,0,2),(3,0,1),(1,0,1),
-                                                       (1,0,3),(2,0,3),(0,0,5),
-                                                       (-2,0,3),(-1,0,3),(-1,0,1),
-                                                       (-3,0,1),(-3,0,2),(-5,0,0),
-                                                       (-3,0,-2),(-3,0,-1),(-1,0,-1),
-                                                       (-1,0,-3)])
+    ik_arrows = cmds.curve(n='ik_arm_4arrows_curve',d=1, p=[(-1,0,-3),(-2, 0,-3),(0,0,-5),(2,0,-3),(1,0,-3),(1,0,-1),(3,0,-1),(3,0,-2),(5,0,0),(3,0,2),(3,0,1),(1,0,1),(1,0,3),
+                                                            (2,0,3),(0,0,5),(-2,0,3),(-1,0,3),(-1,0,1),(-3,0,1),(-3,0,2),(-5,0,0),(-3,0,-2),(-3,0,-1),(-1,0,-1),(-1,0,-3)])
 
     ik_arrows_List = cmds.ls(ik_arrows,dag =True)
     cmds.setAttr (ik_arrows_List[0] + '.rotateZ',-90)
-    #cmds.scale (ik_arrows_List[0],0.2,0.2,0.2)
+    cmds.scale (0.2,0.2,0.2, ik_arrows_List[0], scaleXYZ = True)
     cmds.makeIdentity(ik_arrows_List[0],apply =True, t=1, r=1, s=1,pn=1)
 
     # 4 Pin
-    ik_4pin = cmds.curve(n='ik_arm_4pin_curve', d=1, p=[(0,0,0),(0,0,-2),(-1,0,-2),
-                                                        (-1,0,-4),(1,0,-4),(1,0,-2),
-                                                        (0,0,-2),(0,0,0),(2,0,0),
-                                                        (2,0,-1),(4,0,-1),(4,0,1),
-                                                        (2,0,1),(2,0,0),(0,0,0),
-                                                        (0,0,2),(1,0,2),(1,0,4),
-                                                        (-1,0,4),(-1,0,2),(0,0,2),
-                                                        (0,0,0),(-2,0,0),(-2,0,1),
-                                                        (-4,0,1),(-4,0,-1),(-2,0,-1),
-                                                        (-2,0,0)])
+    ik_4pin = cmds.curve(n='ik_arm_4pin_curve', d=1, p=[(0,0,0),(0,0,-2),(-1,0,-2),(-1,0,-4),(1,0,-4),(1,0,-2),(0,0,-2),(0,0,0),(2,0,0),(2,0,-1),(4,0,-1),(4,0,1),(2,0,1),(2,0,0),
+                                                        (0,0,0),(0,0,2),(1,0,2),(1,0,4),(-1,0,4),(-1,0,2),(0,0,2),(0,0,0),(-2,0,0),(-2,0,1),(-4,0,1),(-4,0,-1),(-2,0,-1),(-2,0,0)])
 
     ik_4pin_List = cmds.ls(ik_4pin, dag=True)
     cmds.setAttr(ik_4pin_List[0] + '.rotateY', 90)
-    #cmds.scale(ik_4pin_List[0], 0.5,0.5,0.5)
+    cmds.scale(0.2,0.2,0.2,ik_4pin_List[0], scaleXYZ = True)
     cmds.makeIdentity(ik_4pin_List[0], apply=True, t=1, r=1, s=1, pn=1)
-    '''
+    
     # Empty Groups Creation to put all the shapes for contrls in the parent
     ik_cntrl = cmds.group (empty =True, n='ARM_IK_SCALE_TEST_DONT_DELETE' )
-    cmds.parent (ik_box_List[1], ik_arrows_List[1], ik_4pin_List[1], ik_cntrl, r= True, s=True)
-
+    curveIK=cmds.parent (ik_box_List[1], ik_arrows_List[1], ik_4pin_List[1], ik_cntrl, r= True, s=True)
     transform_list.append(ik_box_List[0])
     transform_list.append(ik_arrows_List[0])
     transform_list.append(ik_4pin_List[0])
@@ -205,38 +190,35 @@ def armIconScale():
     #setting Visibility to just show what shape is selected in the UI
 
     if ikShape == 1:
-        cmds.setAttr(ik_arrows + 'Shape.v', 0)
-        cmds.setAttr(ik_4pin + 'Shape.v', 0)
+        cmds.setAttr('curveShape2.v', 0)
+        cmds.setAttr('curveShape3.v', 0)
+
     if ikShape == 2:
-        cmds.setAttr(ik_box + 'Shape.v', 0)
-        cmds.setAttr(ik_4pin + 'Shape.v', 0)
+        cmds.setAttr('curveShape1.v', 0)
+        cmds.setAttr('curveShape3.v', 0)
     if ikShape == 3:
-        cmds.setAttr(ik_box + 'Shape.v', 0)
-        cmds.setAttr(ik_arrows + 'Shape.v', 0)
+        cmds.setAttr('curveShape1.v', 0)
+        cmds.setAttr('curveShape2.v', 0)
 
     # positioning the control
     tempCONST = cmds.parentConstraint (selected[1],ik_cntrl, mo =False)
     cmds.delete (tempCONST)
-    tempCONST = cmds.parentConstraint (selected[-1],ik_cntrl, mo =False)
+    tempCONST = cmds.pointConstraint (selected[-1],ik_cntrl, mo =False)
     cmds.delete (tempCONST)
-    cmds.parentConstraint (selected[-1],ik_cntrl, mo =True)
-    icon_test_list.append(ik_ctrl)
+    cmds.parentConstraint (ik_cntrl,selected[-1], mo =True)
+    icon_test_list.append(ik_cntrl)
 
     # create the FK Icon
-    fk_circle = cmds.circle (n ='fk_arm_circle_curve', c=(0,0,0), nr=(1,0,0), sw=360, r=1, d=3, ut=0, tol=0.01,s=1)
+    fk_circle = cmds.circle (n ='fk_arm_circle_curve', c=(0,0,0), nr=(1,0,0), sw=360, r=1, d=3, ut=0, tol=0.01,s=1)[0]  
     fk_circle_List = cmds.ls(fk_circle, dag =True)
 
     # 180 Arrows
-    fk_turn = cmds.circle (n='fk_arm_turnarrows_curve', d=3,p=[(0,0,0),(0,0,1),(0,0,2),
-                                                               (1,0,2),(0,0,3),(-1,0,2),
-                                                               (0,0,2),(0,0,1),(0,0,0),
-                                                               (0,0,-1),(0,0,-2),(-1,0,-2),
-                                                               (0,0,-3),(1,0,-2),(0,0,-2)])
+    fk_turn = cmds.curve (n='fk_arm_turnarrows_curve', d=1, bez=False,p=[(0,0,0),(0,0,1),(0,0,2),(1,0,2),(0,0,3),(-1,0,2),(0,0,2),(0,0,1),(0,0,0),(0,0,-1),(0,0,-2),(-1,0,-2),(0,0,-3),(1,0,-2),(0,0,-2)])
     fk_turn_List = cmds.ls (fk_turn ,dag =True)
     cmds.setAttr (fk_turn_List[0]+ '.rotateY', -90)
     cmds.setAttr (fk_turn_List[0]+ '.rotateX', 90)
     cmds.makeIdentity(fk_turn_List[0], apply=True, t=1, r=1, s=1, n=0, pn=1)
-
+  
     #empty group creation
     fk_cntrl = cmds.group(empty=True, n='ARM_FK_SCALE_TEST_DONT_DELETE')
     cmds.parent(fk_circle_List[1], fk_turn_List[1], fk_cntrl, r=True, s=True)
@@ -246,28 +228,26 @@ def armIconScale():
 
     # visibility to switch off the controls which are not selected in the gui
     if fkShape == 1:
-        cmds.setAttr(fk_turn + 'Shape.v', 0)
-    if ikShape == 2:
+        cmds.setAttr('curveShape4.v', 0)
+    if fkShape == 2:
         cmds.setAttr(fk_circle + 'Shape.v', 0)
-
+    
     #positioning the cntrl
-    tempCONST = cmds.parentConstraint (selected[0], fk_cntrl, mo= False)
-    icon_test_list.append (fk_ctrl)
+    tempCONST = cmds.parentConstraint ( selected[0], fk_cntrl,mo= False)
+    cmds.delete(tempCONST)
+    tempCONST = cmds.parentConstraint( fk_cntrl,selected[0], mo=True)
+    icon_test_list.append (fk_cntrl)
 
     #creating the PV Icon
     #pv diamond
-    pvDmnd = cmds.curve(d=1, n='pv_dmnd_curve', p=[(0.00664267, -0.0106004, 1),(1, -0.00526262, 0),(0, 2, 0),
-                                                   (0.00088465, -0.0106004, 1),(-1, -0.0106004, 0.0127566),
-                                                   (-0.00050717, 2, 0),(0.00088465, -0.0106004, -1),(-1, -0.0220406, 0),
-                                                   (0.00088465, -0.0106004, -1),(1.000885, -0.0106004, 0),
-                                                   (0.00176521, -2, -0.00452318),(0.00088465, -0.0106004, -1),
-                                                   (0.00176921, -2, 0),(-1, -0.0106004, 0),(0.00176771, -2, 0.00170249),
+    pvDmnd = cmds.curve(d=1, n='pv_dmnd_curve', p=[(0.00664267, -0.0106004, 1),(1, -0.00526262, 0),(0, 2, 0),(0.00088465, -0.0106004, 1),(-1, -0.0106004, 0.0127566),
+                                                   (-0.00050717, 2, 0),(0.00088465, -0.0106004, -1),(-1, -0.0220406, 0),(0.00088465, -0.0106004, -1),(1.000885, -0.0106004, 0),
+                                                   (0.00176521, -2, -0.00452318),(0.00088465, -0.0106004, -1),(0.00176921, -2, 0),(-1, -0.0106004, 0),(0.00176771, -2, 0.00170249),
                                                    (-0.00080412, -0.0106004, 1)])
-    pv_dmnd_List = pv.ls (pvDmd, dag =True)
+    pv_dmnd_List = cmds.ls (pvDmnd, dag =True)
 
     # pv Arrow creation
-    pvArrow = cmds.curve(d=1, n='pv_arrow_curve', p=[(-2,0,-1),(1,0,-1),(1,0,-2),(3,0,0),
-                                                   (1,0,2),(1,0,1),(-2,0,1),(-2,0,-1)])
+    pvArrow = cmds.curve(d=1, n='pv_arrow_curve', p=[(-2,0,-1),(1,0,-1),(1,0,-2),(3,0,0),(1,0,2),(1,0,1),(-2,0,1),(-2,0,-1)])
     pv_arrow_List = cmds.ls(pvArrow,dag =True)
     cmds.xform(pvArrow,pivots =[0,0,0],ws =True)
     cmds.makeIdentity(pv_arrow_List[0], apply=True, t=1, r=1, s=1, n=0, pn=1)
@@ -279,25 +259,25 @@ def armIconScale():
     transform_list.append(pv_dmnd_List[0])
     transform_list.append(pv_arrow_List[0])
 
+    # shape curve name
     # visibility to switch off the controls which are not selected in the gui
     if pvShape == 1:
-        cmds.setAttr(pvArrow + 'Shape.v', 0)
+        cmds.setAttr('curveShape6.v', 0)
     if pvShape == 2:
-        cmds.setAttr(pvDmnd + 'Shape.v', 0)
+        cmds.setAttr('curveShape5.v', 0)
     icon_test_list.append(pvIcon)
 
-    #making hand controls
+    # making hand controls
     # circle Creation
-    handCircle = cmds.circle(n='hand_circle_curve', c=(0, 0, 0), nr=(1, 0, 0), sw=360, r=1, d=3, ut=0, tol=0.01, s=1)
-    handCircle_List = cmds.ls(fk_circle, dag=True)
+    handCircle = cmds.circle(n='hand_circle_curve', c=(0, 0, 0), nr=(1, 0, 0), sw=360, r=1, d=3, ut=0, tol=0.01, s=1)[0]
+    handCircle_List = cmds.ls(handCircle, dag=True)
     cmds.setAttr(handCircle + '.rotateX', 90)
     cmds.makeIdentity(handCircle, apply=True, t=1, r=1, s=1, n=0, pn=1)
 
     # cog Creation
-    handCOG = cmds.circle(n='hand_cog_curve', c=(0, 0, 0), nr=(0, 1, 0), sw=360, r=1, d=3, ut=0, tol=0.01, s=16)
+    handCOG = cmds.circle(n='hand_cog_curve', c=(0, 0, 0), nr=(0, 1, 0), sw=360, r=1, d=3, ut=0, tol=0.01, s=16)[0]
     handCOG_List = cmds.ls(handCOG, dag=True)
-    cmds.select(handCOG + ".cv[0]", handCOG + ".cv[2]", handCOG + ".cv[4]", handCOG + ".cv[6]", handCOG + ".cv[8]",
-                handCOG + ".cv[10]", handCOG + ".cv[12]", handCOG + ".cv[14]")
+    cmds.select(handCOG + ".cv[0]", handCOG + ".cv[2]", handCOG + ".cv[4]", handCOG + ".cv[6]", handCOG + ".cv[8]",handCOG + ".cv[10]", handCOG + ".cv[12]", handCOG + ".cv[14]")
     cmds.scale(0.480612, 0.480612, 0.480612)
     cmds.xform(handCOG, pivots= [0,0,0], ws= True)
     cmds.makeIdentity(handCOG, apply =True, t=1, r=1, s=1, n=0, pn=1)
@@ -321,29 +301,43 @@ def armIconScale():
     cmds.delete(tempCONST)
     icon_test_list.append(handIcon)
 
-    # TODO:
     # getting the pole vector location
+    pvLoc = cmds.spaceLocator (p=(0,0,0),name ='pv_local_loc')
+    cmds.setAttr ('pv_local_locShape.visibility',0)
+    pvgrp = cmds.group (pvLoc, name = 'pv_local_grp')
+    pvoffset = cmds.group (pvIcon, name = 'pv_pos_grp')
+    pvGrpMain = cmds.group (pvgrp, pvoffset, name = 'pv_main_grp')
+
+    cmds.pointConstraint (selected[0], selected[-1], pvgrp, mo =False)
+    cmds.aimConstraint (selected[0], pvgrp, mo=False, weight=1, aimVector=(1,0,0),upVector=(0,1,0),worldUpType="objectrotation")
+    cmds.pointConstraint (selected[1], pvLoc, skip =["y","z"], mo =False)
+    cmds.pointConstraint (selected[1], pvoffset, mo=False)
+    cmds.parentConstraint (selected[0], pvGrpMain, mo=True)
+    cmds.aimConstraint (pvLoc, pvoffset, mo=False, aimVector=(0, 0, 1), upVector=(0,0,1),worldUpType="objectrotation")
+
+    for each in ['.tx', '.ty', '.rx', '.ry', '.rz', ]:
+        cmds.setAttr( pvIcon+each, lock =True, keyable =False, channelBox =False)
 
     # visiblity for the main controls
     if armType ==1:
-        cmds.setAttr(ik_ctrl + 'Shape.v', 1)
-        cmds.setAttr(fk_ctrl + 'Shape.v', 0)
-        cmds.setAttr(handIcon + 'Shape.v', 0)
-        cmds.setAttr(pvIcon + 'Shape.v', pvType)
+        cmds.setAttr(ik_cntrl + '.v', 1)
+        cmds.setAttr(fk_cntrl + '.v', 0)
+        cmds.setAttr(handIcon + '.v', 0)
+        cmds.setAttr(pvIcon + '.v', pvType)
     if armType == 2:
-        cmds.setAttr(ik_ctrl + 'Shape.v', 0)
-        cmds.setAttr(fk_ctrl + 'Shape.v', 1)
-        cmds.setAttr(handIcon + 'Shape.v', 0)
-        cmds.setAttr(pvIcon + 'Shape.v', 0)
+        cmds.setAttr(ik_cntrl + '.v', 0)
+        cmds.setAttr(fk_cntrl + '.v', 1)
+        cmds.setAttr(handIcon + '.v', 0)
+        cmds.setAttr(pvIcon + '.v', 0)
     if armType == 3:
-        cmds.setAttr(ik_ctrl + 'Shape.v', 1)
-        cmds.setAttr(fk_ctrl + 'Shape.v', 1)
-        cmds.setAttr(handIcon + 'Shape.v', 1)
-        cmds.setAttr(pvIcon + 'Shape.v', pvType)
-
+        cmds.setAttr(ik_cntrl + '.v', 1)
+        cmds.setAttr(fk_cntrl + '.v', 1)
+        cmds.setAttr(handIcon + '.v', 1)
+        cmds.setAttr(pvIcon + '.v', pvType)
+    
     # parenting all the preset arm rig
     armRefOffset = cmds.group( empty =True, n='arm_RefRig_offset')
-    cmds.parent (ik_ctrl,fk_ctrl,handIcon,armRefOffset)
+    cmds.parent (ik_cntrl,fk_cntrl,handIcon,pvGrpMain,armRefOffset)
 
     #deleting old transform nodes
     for each in transform_list:
@@ -351,10 +345,10 @@ def armIconScale():
 
     #setting the cntrl in refrence to length of joint
     jointVal = cmds.getAttr(selected[1] + '.tx')
-    finalVal = (jointVal / 4)
+    finalVal = (jointVal / 8)
     for each in icon_test_list:
-        cmds.scale (each, finalVal, finalVal, finalVal)
+        cmds.scale (finalVal, finalVal, finalVal, each )
 
-        # did
+
+
         
-'''
